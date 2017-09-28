@@ -1,0 +1,121 @@
+service: custom-user-pool
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: us-east-2
+
+functions:
+  cloudFormationCustomUserPool:
+    handler: cloudFormationCustomUserPool.handler
+    role: CustomUserPoolRole
+    timeout: 300
+
+  postConfirmation:
+    handler: postConfirmation.handler
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PostConfirmation
+
+resources:
+  Resources:
+    CustomUserPoolRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${self:provider.stage}-custom-user-pool-role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:service}-${self:provider.stage}-custom-user-pool-policy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: 
+                    - 'Fn::Join':
+                      - ':'
+                      -
+                        - 'arn:aws:logs'
+                        - Ref: 'AWS::Region'
+                        - Ref: 'AWS::AccountId'
+                        - 'log-group:/aws/lambda/*:*:*'
+                - Effect: Allow
+                  Action:
+                    - cognito-idp:CreateUserPool
+                    - cognito-idp:DeleteUserPool
+                    - cognito-idp:UpdateUserPool
+                    - cognito-idp:DescribeUserPool
+                  Resource: '*'
+
+    CognitoUserPoolUserPool:
+      Type: "Custom::UserPool"
+      Version: "1.0"
+      DependsOn: CloudFormationCustomUserPoolLambdaFunction
+      Properties:
+        ServiceToken: 
+          Fn::GetAtt: [ "CloudFormationCustomUserPoolLambdaFunction", "Arn" ]
+        Region:
+          Ref: AWS::Region
+        AccountId:
+          Ref: AWS::AccountId
+        PoolProperties:
+          PoolName: ${self:service}-${self:provider.stage}-UserPool
+          MfaConfiguration: OFF
+          VerificationMessageTemplate:
+            DefaultEmailOption: "CONFIRM_WITH_CODE"
+          AdminCreateUserConfig:
+            UnusedAccountValidityDays: 7 
+            AllowAdminCreateUserOnly: false
+          AutoVerifiedAttributes:
+            - email
+          Policies:
+            PasswordPolicy:
+              RequireLowercase: true
+              RequireSymbols: true
+              RequireNumbers: true
+              MinimumLength: 8
+              RequireUppercase: true
+          UsernameAttributes:
+            - email
+          Schema:
+            - Name: name
+              AttributeDataType: String
+              Mutable: true
+              Required: true
+            - Name: email
+              AttributeDataType: String
+              Mutable: false
+              Required: true
+
+    CognitoUserPoolClientUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: ${self:service}-${self:provider.stage}-UserPoolClient
+        UserPoolId:
+          Fn::GetAtt: [ "CognitoUserPoolUserPool", "Id" ]
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+        RefreshTokenValidity: 30
+        ReadAttributes:
+          - name
+          - email
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Fn::GetAtt: [ "CognitoUserPoolUserPool", "Id" ]
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClientUserPoolClient
