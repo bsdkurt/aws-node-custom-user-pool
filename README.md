@@ -28,14 +28,14 @@ serverless deploy
 
 ## How to Test
 
-The service includes a lambda that is configred to run as a post confirmation trigger when a new user is confirmed by cognito. To test everything is working as expected create and confirm a user in cognito via the aws-cli. First you will need the User Pool Id and the Pool App Client Id.
+The service includes a lambda that is configred to run as a post confirmation trigger when a new user is confirmed by Cognito. To test everything is working as expected create and confirm a user in Cognito via the aws-cli. First you will need the User Pool Id and the Pool App Client Id.
 
 ```bash
 export UserPoolId=$(aws cloudformation describe-stacks --stack-name custom-user-pool-dev | grep -A 1 UserPoolId | tail -1 | cut -d'"' -f 4)
 export UserPoolClientId=$(aws cloudformation describe-stacks --stack-name custom-user-pool-dev | grep -A 1 UserPoolClientId | tail -1 | cut -d'"' -f 4)
 ```
 
-The create and confirm a user. Note, please change the email address below to your email address.
+Then create and confirm a user. Note, please change the email address below to your email address.
 
 ```bash
 aws cognito-idp sign-up --region us-east-2 --client-id ${UserPoolClientId} --username your@email.address.com --password Passw0rd! --user-attributes Name="name",Value="Your Name"
