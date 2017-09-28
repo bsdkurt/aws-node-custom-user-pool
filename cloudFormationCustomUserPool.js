@@ -52,7 +52,6 @@ module.exports.handler = (event, context, callback) => {
             } else {
                 var resourceId = data.UserPool.Id;
                 responseData["Arn"] = "arn:aws:cognito-idp:" + event.ResourceProperties.Region + ":" + event.ResourceProperties.AccountId + ":userpool/" + resourceId;
-                responseData["Id"] = resourceId;
                 console.log("Successfully created user pool name: " + data.UserPool.Name + ", Id: " + resourceId);
                 sendResponse(event, context, resourceId, responseData);
             }
@@ -78,7 +77,6 @@ module.exports.handler = (event, context, callback) => {
             sendResponse(event, context, resourceId, responseData, error);
         } else {
             responseData["Arn"] = "arn:aws:cognito-idp:" + event.ResourceProperties.Region + ":" + event.ResourceProperties.AccountId + ":userpool/" + resourceId;
-            responseData["Id"] = resourceId;
             console.log("Successfully updated user pool id: " + resourceId);
             sendResponse(event, context, resourceId, responseData);
         }

@@ -103,7 +103,7 @@ resources:
       Properties:
         ClientName: ${self:service}-${self:provider.stage}-UserPoolClient
         UserPoolId:
-          Fn::GetAtt: [ "CognitoUserPoolUserPool", "Id" ]
+          Ref: CognitoUserPoolUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
@@ -115,7 +115,7 @@ resources:
   Outputs:
     UserPoolId:
       Value:
-        Fn::GetAtt: [ "CognitoUserPoolUserPool", "Id" ]
+        Ref: CognitoUserPoolUserPool
     UserPoolClientId:
       Value:
         Ref: CognitoUserPoolClientUserPoolClient
