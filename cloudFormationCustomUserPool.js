@@ -70,7 +70,6 @@ module.exports.handler = (event, context, callback) => {
     delete params.PoolName;
     delete params.Schema;
     delete params.UsernameAttributes;
-    delete params.somethingelse;
     
     cognitoISP.updateUserPool(params, (error, data) => {
         var responseData = {};
@@ -85,6 +84,47 @@ module.exports.handler = (event, context, callback) => {
         }
     });
 };
+
+function buildParamsFromArray(array, params) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i].constructor == Object) {
+            params[i] = {};
+            buildParamsFromObject(array[i], params[i]);
+        } else if (array[i].constructor == Array) {
+            params[i] = new Array(array[i].length);
+            buildParamsFromArrray(array[i], params[i]);
+        } else if (array[i] == "true")
+            params[i] = true;
+        else if (array[i] == "false")
+            params[i] = false;
+        else
+            params[i] = array[i];
+    }
+}
+
+function buildParamsFromObject(obj, params) {
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (obj[property].constructor == Object) {
+                params[property] = {};
+                buildParamsFromObject(obj[property], params[property]);
+            } else if (obj[property].constructor == Array) {
+                params[property] = new Array(obj[property].length);
+                buildParamsFromArray(obj[property], params[property]);
+            } else if (obj[property] == "true")
+                params[property] = true;
+            else if (obj[property] == "false")
+                params[property] = false;
+            else
+                params[property] = obj[property];
+        }
+    }
+}
+
+// The function below was obtained from AWS documentation on cloud formation: 
+// 'Walkthrough: Looking Up Amazon Machine Image IDs'
+// http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-custom-resources-lambda-lookup-amiids.html
+// It was modifed to log the error and take the resourceId as arguments
 
 // Send response to the pre-signed S3 URL 
 function sendResponse(event, context, resourceId, responseData, error) {
@@ -137,40 +177,4 @@ function sendResponse(event, context, resourceId, responseData, error) {
     // write data to request body
     request.write(responseBody);
     request.end();
-}
-
-function buildParamsFromArray(array, params) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].constructor == Object) {
-            params[i] = {};
-            buildParamsFromObject(array[i], params[i]);
-        } else if (array[i].constructor == Array) {
-            params[i] = new Array(array[i].length);
-            buildParamsFromArrray(array[i], params[i]);
-        } else if (array[i] == "true")
-            params[i] = true;
-        else if (array[i] == "false")
-            params[i] = false;
-        else
-            params[i] = array[i];
-    }
-}
-
-function buildParamsFromObject(obj, params) {
-    for (var property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (obj[property].constructor == Object) {
-                params[property] = {};
-                buildParamsFromObject(obj[property], params[property]);
-            } else if (obj[property].constructor == Array) {
-                params[property] = new Array(obj[property].length);
-                buildParamsFromArray(obj[property], params[property]);
-            } else if (obj[property] == "true")
-                params[property] = true;
-            else if (obj[property] == "false")
-                params[property] = false;
-            else
-                params[property] = obj[property];
-        }
-    }
 }
