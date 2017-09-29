@@ -28,7 +28,7 @@ serverless deploy
 
 ## How to Test
 
-The service includes a lambda that is configred to run as a post confirmation trigger when a new user is confirmed by Cognito. To test everything is working as expected create and confirm a user in Cognito via the aws-cli. First you will need the User Pool Id and the Pool App Client Id.
+The service includes a lambda that is configured to run as a post confirmation trigger when a new user is confirmed by Cognito. To test everything is working as expected create and confirm a user in Cognito via the aws-cli. First you will need the User Pool Id and the Pool App Client Id.
 
 ```bash
 export UserPoolId=$(aws cloudformation describe-stacks --stack-name custom-user-pool-dev | grep -A 1 UserPoolId | tail -1 | cut -d'"' -f 4)
@@ -42,7 +42,7 @@ aws cognito-idp sign-up --region us-east-2 --client-id ${UserPoolClientId} --use
 aws cognito-idp admin-confirm-sign-up --region us-east-2  --user-pool-id ${UserPoolId} --username your@email.address.com
 ```
 
-The postConfirmation lambda will have executed when the user was confirmed. To verify it exectued go to the AWS web console and navigate to the CloudWatch Logs for the lambda at /aws/lambda/custom-user-pool-dev-postConfirmation. There should be a log message similar to:
+The postConfirmation lambda will have executed when the user was confirmed. To verify it executed go to the AWS web console and navigate to the CloudWatch Logs for the lambda at /aws/lambda/custom-user-pool-dev-postConfirmation. There should be a log message similar to:
 
 ```
 2017-09-28T13:29:18.504Z ExaMple0-a451-11e7-91f3-edc45b79707c User confirmed: User-Pool us-east-2_ExaMple00, UserId: ExAmplE0-53a5-45df-b480-96b1bb6b0b51
