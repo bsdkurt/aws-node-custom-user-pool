@@ -90,7 +90,7 @@ function buildParamsFromArray(array, params) {
             buildParamsFromObject(array[i], params[i]);
         } else if (array[i].constructor == Array) {
             params[i] = new Array(array[i].length);
-            buildParamsFromArrray(array[i], params[i]);
+            buildParamsFromArray(array[i], params[i]);
         } else if (array[i] == "true")
             params[i] = true;
         else if (array[i] == "false")
