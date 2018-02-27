@@ -69,7 +69,8 @@ module.exports.handler = (event, context, callback) => {
     delete params.PoolName;
     delete params.Schema;
     delete params.UsernameAttributes;
-    
+    delete params.AliasAttributes;
+
     cognitoISP.updateUserPool(params, (error, data) => {
         var responseData = {};
         if (error) {
