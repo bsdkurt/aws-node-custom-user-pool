@@ -16,7 +16,7 @@ As of October 2017 AWS Cloud Formation does not directly support creating Cognit
 
 ## Prerequisites
 
-You will need serverless and aws-cli installed and configured.
+You will need [serverless](https://serverless.com/framework/docs/providers/aws/guide/quick-start/) and [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) installed and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
 ## How to Install
 
