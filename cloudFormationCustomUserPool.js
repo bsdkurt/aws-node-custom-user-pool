@@ -51,7 +51,10 @@ module.exports.handler = (event, context, callback) => {
                 sendResponse(event, context, context.logStreamName, responseData, error);
             } else {
                 var resourceId = data.UserPool.Id;
+                var providerName = "cognito-idp." + event.ResourceProperties.Region + ".amazonaws.com/" + resourceId;
                 responseData["Arn"] = "arn:aws:cognito-idp:" + event.ResourceProperties.Region + ":" + event.ResourceProperties.AccountId + ":userpool/" + resourceId;
+                responseData["ProviderName"] = providerName;
+                responseData["ProviderURL"] = "https://" + providerName;
                 console.log("Successfully created user pool name: " + data.UserPool.Name + ", Id: " + resourceId);
                 sendResponse(event, context, resourceId, responseData);
             }
@@ -77,7 +80,10 @@ module.exports.handler = (event, context, callback) => {
             console.log(error, error.stack);
             sendResponse(event, context, resourceId, responseData, error);
         } else {
+            var providerName = "cognito-idp." + event.ResourceProperties.Region + ".amazonaws.com/" + resourceId;
             responseData["Arn"] = "arn:aws:cognito-idp:" + event.ResourceProperties.Region + ":" + event.ResourceProperties.AccountId + ":userpool/" + resourceId;
+            responseData["ProviderName"] = providerName;
+            responseData["ProviderURL"] = "https://" + providerName;
             console.log("Successfully updated user pool id: " + resourceId);
             sendResponse(event, context, resourceId, responseData);
         }
