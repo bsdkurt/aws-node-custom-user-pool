@@ -3,6 +3,7 @@ title: AWS Serverless Cognito Custom User Pool example in NodeJS
 description: This example demonstrates how to create an AWS Cognito custom user pool.
 layout: Doc
 -->
+
 # Serverless AWS Cognito Custom User Pool Example
 
 This example demonstrates how to create an AWS Cognito custom user pool.
@@ -38,8 +39,8 @@ export UserPoolClientId=$(aws cloudformation describe-stacks --stack-name custom
 Then create and confirm a user. Note, please change the email address below to your email address.
 
 ```bash
-aws cognito-idp sign-up --region us-east-2 --client-id ${UserPoolClientId} --username your@email.address.com --password Passw0rd! --user-attributes Name="name",Value="Your Name"
-aws cognito-idp admin-confirm-sign-up --region us-east-2  --user-pool-id ${UserPoolId} --username your@email.address.com
+aws cognito-idp sign-up --region us-east-2 --client-id <cognito-client-id> --username <email> --password Passw0rd! --user-attributes Name="name",Value="<name>"
+aws cognito-idp admin-confirm-sign-up --region us-east-2  --user-pool-id <cognito-pool-id> --username <email>
 ```
 
 The postConfirmation lambda will have executed when the user was confirmed. To verify it executed go to the AWS web console and navigate to the CloudWatch Logs for the lambda at /aws/lambda/custom-user-pool-dev-postConfirmation. There should be a log message similar to:
