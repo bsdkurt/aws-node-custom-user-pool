@@ -5,8 +5,8 @@
   "main": "cloudFormationCustomUserPool.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy:dev": "sls deploy --stage dev --aws-profile personal",
-    "remove:dev": "sls remove --stage dev --aws-profile personal"
+    "deploy:dev": "NODE_ENV=development sls deploy --stage dev --aws-profile personal",
+    "remove:dev": "NODE_ENV=development sls remove --stage dev --aws-profile personal"
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/DiegoFleitas/aws-node-custom-user-pool/issues"
   },
-  "homepage": "https://github.com/DiegoFleitas/aws-node-custom-user-pool#readme"
+  "homepage": "https://github.com/DiegoFleitas/aws-node-custom-user-pool#readme",
+  "dependencies": {
+    "serverless-dotenv-plugin": "^4.0.1"
+  }
 }

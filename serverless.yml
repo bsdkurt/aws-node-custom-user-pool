@@ -6,6 +6,9 @@ provider:
   stage: dev
   region: us-east-2
 
+plugins:
+  - serverless-dotenv-plugin
+
 functions:
   cloudFormationCustomUserPool:
     handler: cloudFormationCustomUserPool.handler
