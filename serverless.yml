@@ -2,7 +2,7 @@ service: custom-user-pool
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs16.x
   stage: dev
   region: us-east-2
 
@@ -60,7 +60,6 @@ resources:
 
     CognitoUserPoolUserPool:
       Type: "Custom::UserPool"
-      Version: "1.0"
       DependsOn: CloudFormationCustomUserPoolLambdaFunction
       Properties:
         ServiceToken: 
